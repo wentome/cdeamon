@@ -2,7 +2,6 @@ package cdeamon
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -33,10 +32,8 @@ func IsRunning() bool {
 func Stop() {
 	appName := filepath.Base(os.Args[0])
 	pids := findProcessPidByName(appName)
-	fmt.Println(pids)
 	if len(pids) > 1 {
 		for _, pid := range pids[:len(pids)-1] {
-			fmt.Println(pid)
 			killProcess(pid)
 		}
 		time.Sleep(time.Millisecond * 50)
