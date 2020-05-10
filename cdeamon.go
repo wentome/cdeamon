@@ -22,25 +22,29 @@ func IsDeamon() bool {
 }
 func IsRunning() bool {
 	appName := filepath.Base(os.Args[0])
-	if len(findProcessPidByName(appName)) > 1 {
+	if len(FindProcessPidByName(appName)) > 1 {
 		return true
 	} else {
 		return false
 	}
 }
 
-func Stop() {
+func Stop() error {
 	appName := filepath.Base(os.Args[0])
-	pids := findProcessPidByName(appName)
+	pids := FindProcessPidByName(appName)
 	if len(pids) > 1 {
 		for _, pid := range pids[:len(pids)-1] {
-			killProcess(pid)
+			err := KillProcess(pid)
+			if err != nil {
+				return err
+			}
 		}
 		time.Sleep(time.Millisecond * 50)
 	}
+	return nil
 }
 
-func findProcessPidByName(processName string) []int {
+func FindProcessPidByName(processName string) []int {
 	var pids []int
 	fd, _ := ioutil.ReadDir("/proc")
 	for _, fi := range fd {
@@ -65,7 +69,14 @@ func findProcessPidByName(processName string) []int {
 	return pids
 }
 
-func killProcess(pid int) {
-	proc, _ := os.FindProcess(pid)
-	proc.Kill()
+func KillProcess(pid int) error {
+	proc, err := os.FindProcess(pid)
+	if err != nil {
+		return err
+	}
+	err = proc.Kill()
+	if err != nil {
+		return err
+	}
+	return nil
 }
