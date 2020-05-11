@@ -32,8 +32,12 @@ func IsRunning() bool {
 func Stop() error {
 	appName := filepath.Base(os.Args[0])
 	pids := FindProcessPidByName(appName)
+	thisPid := os.Getpid()
 	if len(pids) > 1 {
 		for _, pid := range pids[:len(pids)-1] {
+			if thisPid == pid {
+				continue
+			}
 			err := KillProcess(pid)
 			if err != nil {
 				return err
