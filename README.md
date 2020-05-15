@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"../../cdeamon"
+	"github.com/wentome/cdeamon"
 )
 
 func main() {
