@@ -2,6 +2,7 @@ package cdeamon
 
 import (
 	"bytes"
+	"errors"
 	"io/ioutil"
 	"os"
 	"path"
@@ -31,21 +32,25 @@ func IsRunning() bool {
 
 func Stop() error {
 	appName := filepath.Base(os.Args[0])
-	pids := FindProcessPidByName(appName)
 	thisPid := os.Getpid()
-	if len(pids) > 1 {
-		for _, pid := range pids[:len(pids)-1] {
-			if thisPid == pid {
-				continue
+	for i := 0; i < 3; i++ {
+		pids := FindProcessPidByName(appName)
+		if len(pids) > 1 {
+			for _, pid := range pids {
+				if thisPid == pid {
+					continue
+				}
+				err := KillProcess(pid)
+				if err != nil {
+					continue
+				}
 			}
-			err := KillProcess(pid)
-			if err != nil {
-				return err
-			}
+			time.Sleep(time.Millisecond * 50)
+		} else {
+			return nil
 		}
-		time.Sleep(time.Millisecond * 50)
 	}
-	return nil
+	return errors.New("Stop fail")
 }
 
 func FindProcessPidByName(processName string) []int {
