@@ -17,10 +17,18 @@ func main() {
 
 	if len(flagArgs) > 0 {
 		if flagArgs[0] == "stop" {
-			cdeamon.Stop()
+			err := cdeamon.Stop()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 			return
 		} else if flagArgs[0] == "restart" {
-			cdeamon.Stop()
+			err := cdeamon.Stop()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 		}
 	}
 
