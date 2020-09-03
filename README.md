@@ -1,4 +1,4 @@
-# cdeamon
+# cdeamon 注意程序名字最长15个字符
 ```
 package main
 
